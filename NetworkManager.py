@@ -516,6 +516,12 @@ class fixups(object):
                     settings['ipv4']['addresses'] = [fixups.addrconf_to_dbus(addr,socket.AF_INET) for addr in settings['ipv4']['addresses']]
                 if 'routes' in settings['ipv4']:
                     settings['ipv4']['routes'] = [fixups.route_to_dbus(route,socket.AF_INET) for route in settings['ipv4']['routes']]
+                    if len(settings['ipv4']['routes']) > 0:
+                        # When 'routes' is set 'route-data' is ignored. There
+                        # isn't currently a dbus encoding for 'route-data' so
+                        # in these cases where it is not going to be processed
+                        # anyway, let's drop it.
+                        settings['ipv4'].pop('route-data', None)
                 if 'dns' in settings['ipv4']:
                     settings['ipv4']['dns'] = [fixups.addr_to_dbus(addr,socket.AF_INET) for addr in settings['ipv4']['dns']]
             if 'ipv6' in settings:
